@@ -294,7 +294,7 @@ button:focus-visible, input:focus-visible, select:focus-visible{ outline:2px sol
         <i class="fa-solid fa-user-shield"></i>
       </button>
     </div>
-    <button class="add-btn" onclick="openDocForm()" aria-label="เพิ่มหนังสือใหม่" title="เพิ่มหนังสือใหม่">
+    <button class="add-btn" id="add-btn" onclick="openDocForm()" aria-label="เพิ่มหนังสือใหม่" title="เพิ่มหนังสือใหม่" style="display:none;">
       <i class="fa-solid fa-plus"></i>
     </button>
   </div>
@@ -493,7 +493,7 @@ button:focus-visible, input:focus-visible, select:focus-visible{ outline:2px sol
 
 </body>
 <script>
-const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxxZBQaH1zGsbLG-45mo_RiS_2upSY8nrUHryFolByRPYn9Wo12ppPVYJu6XU-IOYe1/exec";
+const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwrk3EsUmd-a8S3i7ntS2Zznm_K2ffLTE_QgNV3si6A4YNXwzeRWcB8WI1YME757WnT/exec";
 
 // =========================
 // DOCUMENT TYPE CONFIG
@@ -944,6 +944,15 @@ function copyShareLink(url) {
    FORM OPEN/CLOSE
 ========================= */
 function openDocForm() {
+  // ต้องเข้าสู่ระบบแอดมินก่อนจึงจะเพิ่มหนังสือได้ (ผู้ใช้ทั่วไปดูได้อย่างเดียว)
+  if (!adminSession) {
+    return Swal.fire({
+      icon: "info", title: "เฉพาะแอดมิน",
+      text: "กรุณาเข้าสู่ระบบแอดมินก่อนจึงจะบันทึกหนังสือใหม่ได้",
+      confirmButtonColor: "#0575E6"
+    }).then(() => openAdminLoginModal());
+  }
+
   document.getElementById("docForm").reset();
   document.getElementById("docEditId").value = "";
   document.getElementById("docFormTitle").textContent = "บันทึกหนังสือใหม่";
@@ -951,6 +960,14 @@ function openDocForm() {
   document.getElementById("btn-save").innerHTML = '<i class="fa-solid fa-floppy-disk"></i> บันทึก';
   setDocFormFieldsDisabled(false);
   document.getElementById("pdfPreview").innerHTML = "";
+
+  // แอดมินเฉพาะประเภท (group) ให้ล็อกประเภทหนังสือเป็นประเภทที่ตนดูแลเท่านั้น
+  if (adminSession.role !== "super") {
+    document.getElementById("docType").value = adminSession.scopeType;
+    document.getElementById("docType").disabled = true;
+  } else {
+    document.getElementById("docType").disabled = false;
+  }
 
   document.getElementById("docFormModal").classList.remove("d-none");
   document.body.style.overflow = "hidden";
@@ -1046,6 +1063,8 @@ function adminLogout() {
 
 function updateAdminUI() {
   const area = document.getElementById("admin-area");
+  const addBtn = document.getElementById("add-btn");
+  if (addBtn) addBtn.style.display = adminSession ? "" : "none";
   if (adminSession) {
     const roleLabel = adminSession.role === "super" ? "ผู้ดูแลระบบ" : "แอดมิน: " + (DOC_TYPES[adminSession.scopeType] ? DOC_TYPES[adminSession.scopeType].title : "");
     const memberBtnHtml = adminSession.role === "super"
@@ -1403,6 +1422,10 @@ async function saveDoc() {
   const editId = document.getElementById("docEditId").value;
   if (editId) return updateDoc();
 
+  if (!adminSession) {
+    return Swal.fire({ icon:"warning", title:"เฉพาะแอดมิน", text:"กรุณาเข้าสู่ระบบแอดมินก่อนบันทึกหนังสือ", confirmButtonColor:"#0575E6" });
+  }
+
   const btn = document.getElementById("btn-save");
 
   const type = document.getElementById("docType").value;
@@ -1448,7 +1471,7 @@ async function saveDoc() {
 
     Swal.update({ title:"กำลังบันทึกข้อมูล", html:"กรุณารอสักครู่..." });
 
-    const payload = { action:"create", type, subject, to, docDate, uploadId, fileMimeType: file.type };
+    const payload = { action:"create", token: adminSession.token, type, subject, to, docDate, uploadId, fileMimeType: file.type };
 
     const response = await fetch(GAS_WEB_APP_URL, { method:"POST", body: JSON.stringify(payload) });
     const result = await response.json();
