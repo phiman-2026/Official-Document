@@ -316,8 +316,8 @@ button:focus-visible, input:focus-visible, select:focus-visible{ outline:2px sol
       <label class="filter-label">ประเภทหนังสือ</label>
       <select id="filter-type" onchange="searchDocs()" class="filter-select">
         <option value="all">ทั้งหมด</option>
-        <option value="internal">หนังสือภายใน</option>
-        <option value="external">หนังสือภายนอก</option>
+        <option value="internal">หนังสือภายในและข้อมูลอื่น ๆ</option>
+        <option value="external">ข้อมูลอื่น ๆ ภายนอก</option>
       </select>
     </div>
     <div class="filter-group">
@@ -344,8 +344,8 @@ button:focus-visible, input:focus-visible, select:focus-visible{ outline:2px sol
         <div class="mt-0">
           <label class="form-label">ประเภทหนังสือราชการ<span class="required-star">*</span></label>
           <select id="docType" class="form-select">
-            <option value="internal">หนังสือภายใน</option>
-            <option value="external">หนังสือภายนอก</option>
+            <option value="internal">หนังสือภายในและข้อมูลอื่น ๆ</option>
+            <option value="external">ข้อมูลอื่น ๆ ภายนอก</option>
           </select>
         </div>
 
@@ -454,8 +454,8 @@ button:focus-visible, input:focus-visible, select:focus-visible{ outline:2px sol
         <div id="memberScopeArea" class="d-none mt-3">
           <label class="form-label">ประเภทที่ดูแล<span class="required-star">*</span></label>
           <select id="memberScopeType" class="form-select">
-            <option value="internal">หนังสือภายใน</option>
-            <option value="external">หนังสือภายนอก</option>
+            <option value="internal">หนังสือภายในและข้อมูลอื่น ๆ</option>
+            <option value="external">ข้อมูลอื่น ๆ ภายนอก</option>
           </select>
         </div>
       </form>
@@ -472,10 +472,10 @@ button:focus-visible, input:focus-visible, select:focus-visible{ outline:2px sol
     <span class="tab-icon-wrap"><i class="fa-solid fa-house"></i></span><span class="tab-label">หน้าแรก</span>
   </button>
   <button class="tab-item" id="nav-internal" onclick="changeTab('internal')">
-    <span class="tab-icon-wrap"><i class="fa-solid fa-envelope-open-text"></i></span><span class="tab-label">หนังสือภายใน</span>
+    <span class="tab-icon-wrap"><i class="fa-solid fa-envelope-open-text"></i></span><span class="tab-label">หนังสือภายในและข้อมูลอื่น ๆ</span>
   </button>
   <button class="tab-item" id="nav-external" onclick="changeTab('external')">
-    <span class="tab-icon-wrap"><i class="fa-solid fa-paper-plane"></i></span><span class="tab-label">หนังสือภายนอก</span>
+    <span class="tab-icon-wrap"><i class="fa-solid fa-paper-plane"></i></span><span class="tab-label">ข้อมูลอื่น ๆ ภายนอก</span>
   </button>
 </nav>
 
@@ -500,14 +500,14 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwrk3EsUmd-a8S3
 // =========================
 const DOC_TYPES = {
   internal: {
-    title: "หนังสือภายใน",
+    title: "หนังสือภายในและข้อมูลอื่น ๆ",
     icon: "fa-envelope-open-text",
     color: "#0575E6",
     gradient: "linear-gradient(160deg, #021B79 0%, #0575E6 100%)",
     prefixLabel: "IN"
   },
   external: {
-    title: "หนังสือภายนอก",
+    title: "ข้อมูลอื่น ๆ ภายนอก",
     icon: "fa-paper-plane",
     color: "#833AB4",
     gradient: "linear-gradient(160deg, #FCB045 0%, #FD1D1D 55%, #833AB4 100%)",
